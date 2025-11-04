@@ -1,24 +1,50 @@
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import {axios} from "axios";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 
 
 export default function signupPage(){
+    const router = useRouter();
     const [user, setUser] = React.useState({
         username: "",
         email: "",
         password: ""
     });
+    const [buttonDisabled, setButtonDisabled] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
 
     const onSignup = async() => {
+        try {
+            setLoading(true);
+            const response = await axios.post("/api/users/signup", user);
+            console.log("Signup success", response.data);
+            router.push("/login");
+
+        }   catch (error) {
+            console.log("Signup error", error);
+            toast.error("Something went wrong");
+
+        }
+        finally {
+            setLoading(false);
+        }
     }
+
+    useEffect(() => {
+        if(user.username.length > 0 && user.email.length > 0 && user.password.length > 0){
+            setButtonDisabled(false);
+        } else {
+            setButtonDisabled(true);
+        }
+    }, [user]);
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen py-2 background-color[#white]">
-            <h1>Signup Page</h1>
+            <h1>{loading ? "Processing" :"Signup"}</h1>
         <label htmlFor="username">Username</label>
         <input
         className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600"
@@ -51,7 +77,7 @@ export default function signupPage(){
             <hr />
             <button
             onClick={onSignup}
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Signup here</button>
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">{buttonDisabled ? "No signup" : "Signup"}</button>
             <Link href="/login">Visit login page</Link>  
         </div>
     )
