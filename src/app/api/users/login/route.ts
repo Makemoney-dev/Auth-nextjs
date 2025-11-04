@@ -1,4 +1,4 @@
-import {connect} from "@/dbConfig/dbConfig";
+import {connect} from "@/dbconfig/dbconfig";
 import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
@@ -22,7 +22,7 @@ export async function POST(request:NextRequest){
             return NextResponse.json({message:"Invalid credentials"},{status:400})
         }
 
-        
+
     } catch (error:any) {
         return NextResponse.json({message:error.message},{status:500})
     }
