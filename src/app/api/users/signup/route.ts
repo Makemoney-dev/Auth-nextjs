@@ -17,22 +17,23 @@ export async function POST(request:NextRequest){
         const user = await User.findOne({email})
 
         if(user){
-            return NextResponse.json({message:"User already exists"},{status:400})
+            return NextResponse.json({message:"User does not  exists"},{status:400})
         }
+        console.log("user exosts");  'user exists'
 
         //hash password
         const salt=await bcryptjs.genSalt(10)
         const hashedPassword=await bcryptjs.hash(password,salt)
 
         //create new user
-        const newUser = new user({
+        const newUser = new User({
             username,
             email,
             password:hashedPassword
         })
 
         const savedUser = await newUser.save()
-        console.log(savedUser);
+        console.log(savedUser);  
 
         return NextResponse.json({message:"User created successfully",sucess:true, savedUser})
 
